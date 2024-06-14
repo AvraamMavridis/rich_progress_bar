@@ -1,7 +1,9 @@
 [package]
 name = "rich_progress_bar"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
+description = "RichProgressBar is a Rust crate that provides a customizable progress bar for console applications."
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
