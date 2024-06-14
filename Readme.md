@@ -39,7 +39,7 @@ progress
   .set_display_mode(DisplayMode::Inline)
   .set_total(100);
 
-for in 0..100 {
+for _ in 0..100 {
   progress.inc();
   std::thread::sleep(std::time::Duration::from_millis(150));
 }
