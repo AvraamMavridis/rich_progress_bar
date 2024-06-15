@@ -2,6 +2,8 @@
 
 RichProgressBar is a Rust crate that provides a customizable progress bar for console applications.
 
+[Documentation](https://docs.rs/rich_progress_bar/1.1.0/rich_progress_bar/struct.RichProgressBar.html)
+
 ## Features
 
 - Set the color of the progress bar.
