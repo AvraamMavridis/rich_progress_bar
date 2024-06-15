@@ -6,6 +6,7 @@ RichProgressBar is a Rust crate that provides a customizable progress bar for co
 
 - Set the color of the progress bar.
 - Set the total value of the progress bar.
+- Set the progress character.
 - Set the display mode of the progress bar (inline or new line).
 - Set the length of the progress bar.
 - Increment the current value of the progress bar
@@ -46,3 +47,25 @@ for _ in 0..100 {
 ```
 
 <img src="progress_bar.gif">
+
+
+Example with `NewLine` display mode
+
+```rust
+fn main(){
+  let mut progress = RichProgressBar::new();
+  progress
+    .set_color(Colors::Yellow)
+    .set_bar_length(80)
+    .set_display_mode(DisplayMode::NewLine)
+    .set_progress_character('-')
+    .set_total(100);
+  
+  for _ in 0..100 {
+    progress.inc();
+    std::thread::sleep(std::time::Duration::from_millis(150));
+  }
+}
+```
+
+<img src="progress_bar_new_line.gif">

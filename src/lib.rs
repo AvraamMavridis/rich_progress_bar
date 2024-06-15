@@ -41,6 +41,7 @@ pub struct RichProgressBar {
     bar_length: usize,
     color: colored::Color,
     display_mode: DisplayMode,
+    progress_char: char
 }
 
 impl RichProgressBar {
@@ -56,6 +57,7 @@ impl RichProgressBar {
             bar_length: 90,
             color: Colors::White,
             display_mode: DisplayMode::Inline,
+            progress_char: '*'
         }
     }
 
@@ -66,6 +68,23 @@ impl RichProgressBar {
     /// The current progress number
     pub fn get_current(&self) -> u64 {
         self.current
+    }
+
+    /// Sets the character used for progress display.
+    ///
+    /// This function allows you to customize the character that represents progress
+    /// in a progress bar or similar visual element.
+    ///
+    /// # Arguments
+    ///
+    /// * `progress_char` - A `char` that represents the character to be used for displaying progress.
+    ///
+    /// # Returns
+    ///
+    /// The current `RichProgressBar` instance.
+    pub fn set_progress_character(&mut self, progress_char: char) -> &mut Self {
+        self.progress_char = progress_char;
+        self
     }
 
     /// Sets the color of the progress bar.
@@ -176,14 +195,14 @@ impl RichProgressBar {
     fn display(&self) -> Result<(), std::io::Error>{
         let percentage = self.current as f64 / self.total as f64;
         let filled_len = (self.bar_length as f64 * percentage).round() as usize;
-        let bar: String = "=".repeat(filled_len) + &" ".repeat(self.bar_length - filled_len);
+        let bar: String = self.progress_char.to_string().repeat(filled_len) + &" ".repeat(self.bar_length - filled_len);
 
         match self.display_mode {
             DisplayMode::Inline => {
                 self.display_inline(&bar, percentage)
             },
             DisplayMode::NewLine => {
-                self.display_new_inline(&bar, percentage);
+                self.display_newline(&bar, percentage);
                 Ok(())
             },
         }
@@ -196,10 +215,13 @@ impl RichProgressBar {
     /// * `bar` - A `&str` representing the progress bar.
     /// * `percentage` - A `f64` representing the percentage of the current value to the total value.
     fn display_inline(&self, bar: &str, percentage: f64) -> Result<(), std::io::Error>{
+        let colored_bar = format!("[{}]", bar).color(self.color);
+        let colored_percentage = format!("{}%", (100.0 * percentage).round()).color(self.color);
+    
         print!(
-            "\r[{}] {}%",
-            bar.to_string().color(self.color),
-            (100.0 * percentage).round().to_string().color(self.color)
+            "\r{} {}",
+            colored_bar,
+            colored_percentage
         );
     
         io::stdout().flush()
@@ -211,7 +233,9 @@ impl RichProgressBar {
     ///
     /// * `bar` - A `&str` representing the progress bar.
     /// * `percentage` - A `f64` representing the percentage of the current value to the total value.
-    fn display_new_inline(&self, bar: &str, percentage: f64) {
-        println!("\r[{:<50}] {}%", bar, (100.0 * percentage).round());
+    fn display_newline(&self, bar: &str, percentage: f64) {
+        let colored_bar = format!("[{:<50}]", bar).to_string().color(self.color);
+        let colored_percentage  = format!("{}%", (100.0 * percentage).round()).to_string().color(self.color);
+        println!("\r{} {}", colored_bar, colored_percentage);
     }
 }
